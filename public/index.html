@@ -31,9 +31,37 @@
     <div class="product">
         <ul></ul>
     </div>
+    <button class="corsBtn">连接node解决本地跨域</button>
+
+    <br><br><br>
+    <div>新增内容：<input type="text" value="" id="insertMongoData" /></div>
+    <button class="insertMongoDB">新增MongoDB数据</button>
+    <br><br>
+    <button class="selectMongoDB">查询MongoDB数据</button>
+    <div class="selectMongoDB_product">
+        <ul></ul>
+    </div>
 </body>
 <script src="js/jquery-1.8.3.js"></script>
 <script>
+    $('.corsBtn').click(function () {
+        $.ajax({
+            url: 'http://localhost:8888/getNodeCors', //通过nodejs访问,解决本地跨域问题
+            type: 'post',
+            dataType: 'json',
+            timeout: 5000,
+            data: {
+                id:4
+            },
+            success: function (data) {
+                console.log(JSON.parse(data));
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    });
+
     $('.reqNode').click(function () {
         $.ajax({
             url: 'http://localhost:8888/process_get',
@@ -61,6 +89,50 @@
             }
         });
     });
+
+    $('.insertMongoDB').click(function () {
+        $.ajax({
+            url: 'http://localhost:8888/process_insert_mongodb',
+            type: 'post',
+            dataType: 'json',
+            timeout: 5000,
+            data: {
+                value:$('#insertMongoData').val()
+            },
+            success: function (data) {
+                alert(data);
+            }, 
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    });
+
+    $('.selectMongoDB').click(function () {
+        $.ajax({
+            url: 'http://localhost:8888/process_select_mongodb',
+            type: 'post',
+            dataType: 'json',
+            timeout: 5000,
+            data: {
+                value:$('#insertMongoData').val()
+            },
+            success: function (data) {
+                var str = '';
+                for(var i = 0;i < data.length; i++){
+                    str += '<li>';
+                    str += '<div>id: ' + data[i].name + '</div>';
+                    str += '<div>名称: ' + data[i].value + '</div>';
+                    str += '</li>';
+                }
+                $('.selectMongoDB_product ul').html(str);
+            }, 
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    });
+    
 </script>
 
 </html>
